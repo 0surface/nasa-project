@@ -19,7 +19,7 @@ app.use('/planets', planetsRouter)
 app.use('/launches', launchesRouter)
 
 app.get('/*', (req, res) => {
-    res.sendFile(__dirname, '..', 'public', 'index.html')
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
 })
 
 module.exports = app
