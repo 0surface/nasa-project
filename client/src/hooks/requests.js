@@ -38,13 +38,11 @@ async function httpAbortLaunch(id) {
   try {
     return await fetch(`${API_URL}/launches/${id}`, {
       method: 'DELETE',
-      body: JSON.stringify(id),
       headers: {
         "Content-Type":"application/json"
       }
     })      
-  } catch (err) {
-    console.log('httpAbortLaunch::',err)
+  } catch (err) {    
     return {ok: false}
   }
 
