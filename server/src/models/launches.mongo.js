@@ -22,3 +22,6 @@ const launchesSchema = mongoose.Schema({
     upcmoing: { type: Boolean, required: true },
     success: { type: Boolean, required: true, default: true },
 })
+
+// Connects lunachesSchema with the "launches" collection
+module.exports = mongoose.model('Launch', launchesSchema)
