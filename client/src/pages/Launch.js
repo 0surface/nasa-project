@@ -3,10 +3,11 @@ import { Appear, Button, Loading, Paragraph } from "arwes";
 import Clickable from "../components/Clickable";
 
 const Launch = props => {
-  const selectorBody = useMemo(() => {
-    return props.planets?.map(planet => 
+  const selectorBody = useMemo(() => {    
+    return props.planets && props.planets?.map(planet => 
       <option value={planet.keplerName} key={planet.keplerName}>{planet.keplerName}</option>
     );
+    
   }, [props.planets]);
 
   const today = new Date().toISOString().split("T")[0];
