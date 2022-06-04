@@ -29,7 +29,7 @@ async function connectToMongo() {
 }
 
 async function startServer() {
-    await connectToMongo
+    await connectToMongo()
     await loadPlanetsData()
 
     server.listen(PORT, () => {
