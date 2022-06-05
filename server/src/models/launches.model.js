@@ -23,7 +23,7 @@ function existsLaunchWithId(launchId) {
 }
 
 async function getLatestFlightNumber() {
-    const latestLaunch = await launchesDatabase.findOne().sort('-fllightNumber')
+    const latestLaunch = await launchesDatabase.findOne().sort('-flightNumber')
     return !latestLaunch ? DEFAULT_FLIGHT_NUMBER : latestLaunch.flightNumber
 }
 
@@ -45,7 +45,8 @@ async function saveLaunch(launch) {
     if (!planet) {
         throw new Error('No matching planet found')
     }
-    await launchesDatabase.updateOne(
+
+    await launchesDatabase.findOneAndUpdate(
         {
             flightNumber: launch.flightNumber,
         },
@@ -57,12 +58,13 @@ async function saveLaunch(launch) {
 }
 
 async function scheduleNewLaunch(launch) {
-    const newFlightNumber = (await getLatestFlightNumber()) + 1
+    const newFlightNumber = await getLatestFlightNumber()
+
     const newLaunch = Object.assign(launch, {
         success: true,
         upcoming: true,
         customers: ['Zero To Mastery', 'NASA'],
-        flightNumber: newFlightNumber,
+        flightNumber: newFlightNumber + 1,
     })
     await saveLaunch(newLaunch)
 }
