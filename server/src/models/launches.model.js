@@ -21,7 +21,7 @@ saveLaunch(launch)
 
 const SPACEX_API_URL = process.env.SPACEX_API_URL
 
-const loadLaunchData = async () => {
+async function populateLaunches() {
     const response = await axios.post(SPACEX_API_URL, {
         query: {},
         options: {
@@ -63,11 +63,31 @@ const loadLaunchData = async () => {
         }
 
         console.log(`${launch.flightNumber} - ${launch.mission}`)
+
+        await saveLaunch(launch)
     }
 }
 
+const loadLaunchData = async () => {
+    const firstLaunch = await findLaunch({
+        flightNumber: 1,
+        rocket: 'Falcon 1',
+        mission: 'falconSat',
+    })
+
+    if (firstLaunch) {
+        console.log('Launch data already loaded')
+    } else {
+        await populateLaunches()
+    }
+}
+
+async function findLaunch(filter) {
+    return await launchesDatabase.findOne(filter)
+}
+
 async function existsLaunchWithId(launchId) {
-    return await launchesDatabase.findOne({ flightNumber: launchId })
+    return await findLaunch({ flightNumber: launchId })
 }
 
 async function getLatestFlightNumber() {
@@ -86,14 +106,6 @@ async function getAllLaunches() {
 }
 
 async function saveLaunch(launch) {
-    const planet = await planets.findOne({
-        keplerName: launch.target,
-    })
-
-    if (!planet) {
-        throw new Error('No matching planet found')
-    }
-
     await launchesDatabase.findOneAndUpdate(
         {
             flightNumber: launch.flightNumber,
@@ -106,6 +118,13 @@ async function saveLaunch(launch) {
 }
 
 async function scheduleNewLaunch(launch) {
+    const planet = await planets.findOne({
+        keplerName: launch.target,
+    })
+
+    if (!planet) {
+        throw new Error('No matching planet found')
+    }
     const newFlightNumber = await getLatestFlightNumber()
 
     const newLaunch = Object.assign(launch, {
