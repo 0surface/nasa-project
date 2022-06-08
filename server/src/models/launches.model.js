@@ -59,7 +59,7 @@ async function populateLaunches() {
         const launch = {
             flightNumber: launchDoc['flight_number'],
             mission: launchDoc['name'],
-            rocket: launchDoc['rocketname'],
+            rocket: launchDoc.rocket['name'],
             launchDate: launchDoc['date_local'],
             upcoming: launchDoc['upcoming'],
             success: launchDoc['success'],
@@ -67,7 +67,9 @@ async function populateLaunches() {
             target: launchDoc[''],
         }
 
-        console.log(`${launch.flightNumber} - ${launch.mission}`)
+        console.log(
+            `${launch.flightNumber} - ${launch.mission} -- ${launch.rocket} `
+        )
 
         await saveLaunch(launch)
     }
