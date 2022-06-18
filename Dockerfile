@@ -2,11 +2,18 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json ./
 
-RUN npm install --only=production
+COPY client/package*.json client/
+RUN npm install-client --only=production
 
+COPY package*.json server/
+RUN npm install-server --only=production
+
+COPY client/ client/
 RUN npm run build --prefix client
+
+COPY server/ server/
 
 USER node
 
